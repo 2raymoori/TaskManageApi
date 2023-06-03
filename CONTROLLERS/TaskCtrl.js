@@ -51,22 +51,7 @@ const deleteTask = async (req, res) => {
     return res.status(500).json({ status: "Failure", data: "Error..." });
   }
 };
-const allTask = async (req, res) => {
-  try {
-    const allPost = await TaskModel.find().populate("user", [
-      "firstName",
-      "lastName",
-      "email",
-      "profileImg",
-    ]);
-    return res
-      .status(200)
-      .json({ status: "Success", data: [{ msg: allPost }] });
-  } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ status: "Failure", data: "Error..." });
-  }
-};
+
 const modifyTask = async (req, res) => {
   try {
     const { description, title } = req.body;
@@ -118,6 +103,22 @@ const task = async (req, res) => {
   }
 };
 
+const allTask = async (req, res) => {
+  try {
+    const allPost = await TaskModel.find().populate("user", [
+      "firstName",
+      "lastName",
+      "email",
+      "profileImg",
+    ]);
+    return res
+        .status(200)
+        .json({ status: "Success", data: [{ msg: allPost }] });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ status: "Failure", data: "Error..." });
+  }
+};
 
 
 module.exports = {
