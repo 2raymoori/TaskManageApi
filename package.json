@@ -16,11 +16,12 @@
     "url": "https://github.com/2raymoori/TaskManageApi/issues"
   },
   "homepage": "https://github.com/2raymoori/TaskManageApi#readme",
-  "dependencies":  {
+  "dependencies": {
     "bcryptjs": "^2.4.3",
     "bootstrap": "^5.2.0",
     "config": "^3.3.6",
     "cors": "^2.8.5",
+    "dotenv": "^16.1.4",
     "express": "^4.17.2",
     "express-fileupload": "^1.4.0",
     "express-validator": "^6.14.0",

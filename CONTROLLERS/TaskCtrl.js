@@ -2,30 +2,36 @@ const TaskModel = require("../MODELS/TaskModel");
 const { validationResult } = require("express-validator/check");
 const addTask = async (req, res) => {
   try {
-    const { description, title,priority,dateDue } = req.body;
+    const { description, title, priority, dateDue } = req.body;
+
     const validationRes = validationResult(req);
     if (validationRes.errors.length > 0) {
       return res
         .status(400)
         .json({ status: "Error", data: validationRes.errors });
     }
-    const priorityVals = [1,2,3];
-    if(!priorityVals.includes(priority)){
-        return res.status(400).json({status:"Error",data:[{msg:"Sorry priority must be 1,2 or 3"}]});
+    const priorityVals = [1, 2, 3];
+    const priorityConverted = parseInt(priority);
+    if (!priorityVals.includes(priorityConverted)) {
+      return res.status(400).json({
+        status: "Error",
+        data: [{ msg: "Sorry priority must be 1,2 or 3" }],
+      });
     }
     const newTask = new TaskModel({
       description,
       title,
       dateDue,
-        priority,
-      state:false, // any new task is not completed meaning state is false
-        status:0, // status 0 means task is not started
+      priority: priorityConverted,
+      state: false, // any new task is not completed meaning state is false
+      status: 0, // status 0 means task is not started
       user: req.user.id,
     });
+    console.log(newTask);
     await newTask.save();
     return res.status(200).json({
       status: "Success",
-      data: [{ msg: "Post Successfully added", data: newTask }],
+      msg: newTask,
     });
   } catch (error) {
     console.error(error.message);
@@ -54,19 +60,37 @@ const deleteTask = async (req, res) => {
 
 const modifyTask = async (req, res) => {
   try {
-    const { description, title } = req.body;
-    const modifyPost = await PostModel.findById(req.params.id);
-    if (modifyPost.user == req.user.id) {
+    console.log(req.body);
+    const { description, title, priority, status, dateDue } = req.body;
+    const modifyTask = await TaskModel.findById(req.params.id);
+    if (modifyTask.user == req.user.id) {
       if (title) {
-        modifyPost.title = title;
+        modifyTask.title = title;
       }
       if (description) {
-        modifyPost.description = description;
+        modifyTask.description = description;
       }
-      await modifyPost.save();
+      if (priority) {
+        console.log("From Prioroty..");
+        modifyTask.priority = req.body.priority;
+      }
+      if (dateDue) {
+        modifyTask.dateDue = dateDue;
+      }
+      if (req.body.status) {
+        console.log("From Status..." + req.body.status);
+        // modifyTask.status = false;
+        if (req.body.status === -1) {
+          modifyTask.status = false;
+        } else {
+          console.log("Set to True");
+          modifyTask.status = true;
+        }
+      }
+      await modifyTask.save();
       return res.status(200).json({
         status: "Success",
-        data: [{ msg: "Post Successfully added", data: modifyPost }],
+        msg: modifyTask,
       });
     } else {
       return res
@@ -80,10 +104,17 @@ const modifyTask = async (req, res) => {
 };
 const myTasks = async (req, res) => {
   try {
-    const myTasks = await TaskModel.find({ user: req.user.id});
+    const myTasks = await TaskModel.find({ user: req.user.id });
+    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    const onGoingTasks = myTasks.filter((task) => task.status === 0).length;
+    const completedTasks = myTasks.filter((task) => task.status === 1).length;
+    console.log(onGoingTasks);
+    console.log(completedTasks);
+    // console.log(myTasks);
+    const taskReport = { onGoingTasks, completedTasks };
     return res
       .status(200)
-      .json({ status: "Success", data: [{ msg: "My Tasks", data: myTasks }] });
+      .json({ status: "Success", tasks: myTasks, stats: taskReport });
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({ status: "Failure", data: "Error..." });
@@ -112,14 +143,13 @@ const allTask = async (req, res) => {
       "profileImg",
     ]);
     return res
-        .status(200)
-        .json({ status: "Success", data: [{ msg: allPost }] });
+      .status(200)
+      .json({ status: "Success", data: [{ msg: allPost }] });
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({ status: "Failure", data: "Error..." });
   }
 };
-
 
 module.exports = {
   addTask,
@@ -128,4 +158,3 @@ module.exports = {
   myTasks,
   task,
 };
-

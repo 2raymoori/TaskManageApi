@@ -1,8 +1,5 @@
 {
-
-    "dbURL___":"mongodb+srv://lot:811532_lot@letsconnect.pvdur.mongodb.net/",
-    "__dbURL":"mongodb+srv://noynjie:811532_lot@letsconnect.pvdur.mongodb.net/?retryWrites=true&w=majority",
-    "dbURL":"mongodb://localhost:27017/TaskManager",
-    "TOKEN_KEY":"4472897njieS_!"
+  "dbURL": "mongodb+srv://boynjie:811532_lot@taskmanager.hpnmarr.mongodb.net/?retryWrites=true&w=majority",
+  "dbURL__": "mongodb://localhost:27017/TaskManager",
+  "TOKEN_KEY": "4472897njieS_!"
 }
-

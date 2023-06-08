@@ -5,7 +5,7 @@ const { validationResult } = require("express-validator/check");
 
 const addUser = async (req, res) => {
   try {
-    const { fName, lName, email, password, passwordConfirm } = req.body;
+    const { fName, lName, email, password, confirmPassword } = req.body;
     console.log(req.files);
 
     const validationRes = validationResult(req);
@@ -13,7 +13,7 @@ const addUser = async (req, res) => {
       return res
         .status(201)
         .json({ status: "Error", data: validationRes.errors });
-    } else if (password.trim() !== passwordConfirm.trim()) {
+    } else if (password.trim() !== confirmPassword.trim()) {
       return res.status(201).json({
         status: "Error",
         data: [
@@ -53,7 +53,10 @@ const addUser = async (req, res) => {
           if (err) {
             return res
               .status(201)
-              .json({ status: "Error", data: [{ msg: "Sorry There exists an error" }] });
+              .json({
+                status: "Error",
+                data: [{ msg: "Sorry There exists an error" }],
+              });
           } else {
             if (req.files) {
               const docs = req.files.pImage;
@@ -86,4 +89,3 @@ module.exports = {
   addUser,
   modifyUser,
 };
-
