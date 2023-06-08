@@ -1,5 +1,5 @@
 const express = require("express");
-const {addUser, modifyUser} = require("../CONTROLLERS/UserCtrl");
+const { addUser, modifyUser } = require("../CONTROLLERS/userCtrl.js");
 const { check } = require("express-validator/check");
 
 const Router = express.Router();
@@ -25,4 +25,3 @@ Router.post(
 Router.put("", modifyUser);
 
 module.exports = Router;
-
